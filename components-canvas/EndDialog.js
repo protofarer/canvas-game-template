@@ -1,5 +1,5 @@
-import ModalButton from '../game/ModalButton'
-import CONSTANTS from '../game/Constants'
+import ModalButton from './ModalButton'
+import CONSTANTS from '../Constants'
 export default class EndDialog {
   // Stops and Starts the play loop
   // CSDR removing start stop and letting draw run in background

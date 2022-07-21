@@ -1,22 +1,28 @@
 import CONSTANTS from './Constants'
 import Panel from './Panel'
-import EndDialog from './EndDialog'
+// import EndDialog from './components-canvas/EndDialog'
 
 export default class Game {
-  constructor (container, debugMode=false) {
+  constructor (container, debugGame=false) {
     this.container = container
 
-    this.debugMode = debugMode
+    this.debugGame = debugGame
     this.debugDiscPositionMarker = ''
 
+    this.debugState = {
+      isCycleClockDrawn: false,
+    }
+
     this.canvas = document.createElement('canvas')
-    this.canvas.id = 'gameCanvas'
+    this.canvas.id = 'layerGame'
     this.canvas.width = this.canvas.height = 800
     this.container.appendChild(this.canvas)
 
-    this.ctx = this.canvas.getContext('2d')
 
-    this.board = this.debugMode
+    this.ctx = this.canvas.getContext('2d')
+    this.rect = this.canvas.getBoundingClientRect()
+
+    this.board = this.debugGame
       ? CONSTANTS.BOARD_INIT_DEBUG
       : CONSTANTS.BOARD_INIT_PROD
     
@@ -24,29 +30,27 @@ export default class Game {
     this.turnCount = 1
     this.phase = CONSTANTS.PHASE_PLAY    // new, playing, end
 
-    this.endDialog = new EndDialog(this)
+    // this.endDialog = new EndDialog(this)
 
-    const panelOffset = {
-      x: this.boardWidth,
-      y: 0
-    }
+    this.panel = new Panel()
+    this.container.appendChild(this.panel.panelContainer)
 
-    const panelDims = {
-      w: 200,
-      h: this.boardHeight + 2 * this.baseThickness
-    }
+    this.stepChildren = []
+    this.panel.init(this)
 
-    this.panel = new Panel(
-      panelOffset,
-      panelDims,
-      this
-    )
+    this.cyclicFrame = 0
+  }
+
+  addToStep(child) {
+    this.stepChildren.push(child)
   }
 
   step() {
+    this.cyclicFrame = this.cyclicFrame === 60 ? 0 : this.cyclicFrame + 1
     this.drawAll()
-    this.checkEndCondition()
-    this.turnCount++
+    // this.checkEndCondition()
+    // this.turnCount++
+    this.stepChildren.forEach(c => c.step())
   }
 
   checkEndCondition() {
@@ -56,20 +60,39 @@ export default class Game {
   end() {
     // exec end game phase
     console.log(`IN end()`, )
-    this.endDialog.show()
+    // this.endDialog.show()
   }
 
   clr() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
-  drawAll() {
-    this.panel.draw()
+  // TODO add to debugGUI
+  drawGameCycle() {
+    if (this.debugState.isCycleClockDrawn) {
+      this.ctx.beginPath()
+      this.ctx.moveTo(30, 5)
+      this.ctx.lineTo(30, 10)
 
-    if (this.debugOverlay) {
-      this.canvas.style.border = '1px solid red'
-    } else {
-      this.canvas.style.border = 'none'
+      if (this.cyclicFrame > 0 && this.cyclicFrame < 5){
+        this.ctx.moveTo(55, 30)
+        this.ctx.arc(30, 30, 25, 0, 2 * Math.PI)
+      }
+  
+      this.ctx.save()
+      this.ctx.translate(30, 30)
+      this.ctx.moveTo(0,0)
+      this.ctx.rotate((this.cyclicFrame * 2 * Math.PI / 60) - 0.5 * Math.PI)
+      this.ctx.lineTo(20,0)
+      this.ctx.lineWidth = 3
+      this.ctx.strokeStyle = 'red'
+      this.ctx.stroke()
+      this.ctx.restore()
     }
+  }
+
+  drawAll() {
+    this.drawGameCycle()
+    // this.panel.draw()
   }
 }
