@@ -22,10 +22,10 @@ let initDebugGame = window.location.hash === '#debuggame' ? true : false
 // * Play Game: PHASE_PLAY
 // **********************************************************************
 
-let game
 export function startNewGame(debugGame=false) {
-  game = new Game(container, debugGame)
-  game.addToStep(snek)
+  let game = new Game(container, debugGame)
+  let snek = new snek(game.canvas)
+  game.addToStep(snek.step)
 
   let debugGUI = import.meta.env.DEV ? new DebugGUI(game) : null
 

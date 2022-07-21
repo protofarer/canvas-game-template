@@ -5,6 +5,7 @@ export class snek {
   state = {
     headCoords: { x: 400, y: 400 },
     direction: 0,
+    slitherSpeed: 5,
   }
 
   constructor(canvas) {
@@ -15,8 +16,24 @@ export class snek {
 
   initEventListeners() {
     const handleKeyDown = (e) => {
+      switch (e.key) {
+        case 'd':
+          this.state.direction += 1
+          break
+        case 'a':
+          this.state.direction -= 1
+          break
+        default:
+          break
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
+  }
+
+  step() {
+    this.headCoords.x += this.slitherSpeed * Math.cos(this.direction)
+    this.headCoords.y += this.slitherSpeed * Math.sin(this.direction)
+    this.drawSnake()
   }
 
   drawSnake() {
