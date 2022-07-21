@@ -63,8 +63,15 @@ export default class DebugGUI {
     gui.hide()
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === '`') {
-        gui._hidden === false ? gui.hide() : gui.show()
+      switch (e.key) {
+        case '`':
+          gui._hidden === false ? gui.hide() : gui.show()
+          break
+        case 'r':
+          resetGame()
+          break
+        default:
+          break
       }
     })
   }

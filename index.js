@@ -1,7 +1,7 @@
 import Game from './Game.js'
 import DebugGUI from './DebugGUI.js'
 import CONSTANTS from './Constants.js'
-import { snek } from './main.js'
+import Snek from './main.js'
 
 export const ENV = new (function() {
   this.MODE = import.meta.env ? import.meta.env.MODE : 'production' 
@@ -24,8 +24,8 @@ let initDebugGame = window.location.hash === '#debuggame' ? true : false
 
 export function startNewGame(debugGame=false) {
   let game = new Game(container, debugGame)
-  let snek = new snek(game.canvas)
-  game.addToStep(snek.step)
+  let snek = new Snek(game.canvas)
+  game.addToStep(snek)
 
   let debugGUI = import.meta.env.DEV ? new DebugGUI(game) : null
 

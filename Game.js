@@ -51,7 +51,7 @@ export default class Game {
     this.drawAll()
     // this.checkEndCondition()
     // this.turnCount++
-    this.substeps.forEach(step => step())
+    this.substeps.forEach(substep => substep.step())
   }
 
   checkEndCondition() {
