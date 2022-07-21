@@ -35,14 +35,15 @@ export default class Game {
     this.panel = new Panel()
     this.container.appendChild(this.panel.panelContainer)
 
-    this.stepChildren = []
+    // trigger steppers from components: may include draw and other forcing functions
+    this.substeps = []
     this.panel.init(this)
 
     this.cyclicFrame = 0
   }
 
-  addToStep(child) {
-    this.stepChildren.push(child)
+  addToStep(substep) {
+    this.substeps.push(substep)
   }
 
   step() {
@@ -50,7 +51,7 @@ export default class Game {
     this.drawAll()
     // this.checkEndCondition()
     // this.turnCount++
-    this.stepChildren.forEach(c => c.step())
+    this.substeps.forEach(step => step())
   }
 
   checkEndCondition() {
