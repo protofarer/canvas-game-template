@@ -43,7 +43,7 @@ export function startNewGame(debugMode=false) {
   let loopID = requestAnimationFrame(draw())
   function draw(t) {
     game.clr()
-    game.drawAll()
+    game.step()
 
     loopID = requestAnimationFrame(draw)
 
