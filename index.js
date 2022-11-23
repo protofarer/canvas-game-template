@@ -1,4 +1,4 @@
-import Game from './Game.js'
+import Game from './game/Game.js'
 
 export const ENV = new (function() {
   this.MODE = import.meta.env ? import.meta.env.MODE : 'production'
