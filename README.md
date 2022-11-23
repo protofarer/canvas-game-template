@@ -1,1 +1,2 @@
-# boilerplate and handy tools
+# TODO
+- [ ] move clock under debug
