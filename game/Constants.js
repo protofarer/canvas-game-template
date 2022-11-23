@@ -5,4 +5,7 @@ export default {
   TICK: 16,
   CANVAS_WIDTH: 400,
   CANVAS_HEIGHT: 600,
+  collisionFunction: {
+    BASE: 'base'
+  }
 }
