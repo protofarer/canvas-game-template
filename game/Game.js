@@ -9,7 +9,7 @@ import StateMachine from './modules/StateMachine'
 import * as States from './states'
 
 import LevelMaker from './modules/LevelMaker'
-import DebugGUI from './tools/DebugGUI'
+import DebugGUI from './debug/DebugGUI'
 
 import Audio from './modules/Audio'
 

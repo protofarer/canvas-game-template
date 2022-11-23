@@ -1,5 +1,5 @@
 import Constants from '../Constants'
-import Scenarios from '../tools/Scenarios'
+import Scenarios from '../debug/Scenarios'
 
 export default class LevelMaker {
   constructor(game) {
