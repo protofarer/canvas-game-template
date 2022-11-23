@@ -54,7 +54,7 @@ export default class Game {
   }
 
   load() {
-    new Background(this.container)
+    new Background(this.container, 'green')
     this.clock = new Clock(this.ctx, this)
     this.world = new World(this)
     const Sounds = Audio()
