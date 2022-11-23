@@ -1,2 +1,18 @@
-# TODO
-- [ ] move clock under debug
+# Features
+- Responsive portrait orientation
+- Crude entity system with templates
+- Spawning and movement functions
+- Button and Dialog UI components
+- Pre-built bottom panel for information and controls
+- State machine for transitioning between game phases (e.g. start menu, play, game over)
+- A visual clock with time-related methods
+- Audio loader and audio playing methods
+- Debug
+  - Control panel in DOM displays game data and hooks in to invoke in-game functions
+  - Shows hit areas
+  - Control game loop rate
+  - Maintains debug settings across page reloads
+  - [ ] Dev mode lab page for trying out ideas
+- Extras
+  - Color morphing
+  - Easy setting of entity game attributes
