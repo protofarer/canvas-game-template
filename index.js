@@ -6,3 +6,9 @@ export const ENV = new (function() {
 
 document.title = 'A New Project';
 const container = document.createElement('div')
+
+export function newGame() {
+  new Game(container)
+}
+
+newGame()
