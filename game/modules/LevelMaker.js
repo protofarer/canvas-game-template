@@ -42,7 +42,7 @@ export default class LevelMaker {
   // first normal level
   spawnLevelOne() {
     this.spawnRandomPositions({
-      // apple: 10,
+      apple: 10,
       // pebble: 5,
       // mango: 3,
       // banana: 1,

@@ -1,8 +1,6 @@
 import Mob from './Mob'
-import Segment from '../immobs/Segment'
-import { getGameObject, intRep, loadTraits } from '../../utils/helpers'
+import { intRep, loadTraits } from '../../utils/helpers'
 import Constants from '../../Constants'
-import Digestion from '../../behaviors/Digestion'
 import Traits from '../Traits'
 
 /**
@@ -22,14 +20,6 @@ export default class Snek extends Mob {
     return level * ((level - 1) * (this.baseExp / 2))
   }
 
-  // // * segCount is equivalent to seg level
-  // segExpForLevel(segCount) {
-  //   return (
-  //     (this.segLevelMultiplier**(Math.max(1, segCount - 2))) 
-  //     * (this.baseExp)
-  //   )
-  // }
-
   get expGainedThisLevelOnly() {
     const expGained = this.currExp - (this.level === 1 ? 0 : this.expForLevel(this.level))
     return expGained
@@ -45,15 +35,8 @@ export default class Snek extends Mob {
   isTongueOut = false
   tongueDirection = 0
 
-  downstreamSegment
-  // currKnownSegmentCount = 0
-  // get maxSegmentCount() { return this.level }
-
   activeEffects = []
-  postDigestionEffects = []
   wasHarmed = false
-  lifeSpan = 0
-  segments = []
 
   constructor(ctx, startPosition=null, parent=null, initSegmentCount=null) {
     super(ctx, startPosition, parent)
@@ -65,57 +48,26 @@ export default class Snek extends Mob {
     this.normalizeTurnRate()
     this.birthTime = this.parent.t < 0 ? 0 : this.parent.t
 
-    this.addSegment(initSegmentCount ?? this.baseSegmentCount)
     this.setHitAreas()
     this.initEventListeners()
   }
 
   levelDown() {
-    this.segments.shift().detach()
-    for (let i = 0; i < this.segments.length; ++i) {
-      this.segments[i].harmFlash()
-    }
-
-    // only set segExp if segCount changed
-    // if (this.countSegments < this.currKnownSegmentCount) {
-    //   this.currKnownSegmentCount = this.countSegments
-    //   this.currSegExp = this.expForLevel(this.countSegments)
-    // }
-
     this.level = Math.max(1, this.level - 1)
     this.currExp = this.level > 1 ? this.expForLevel(this.level) : 0
     this.normalizeTurnRate()
   }
 
   levelUp() {
-    getGameObject.call(this).sounds.snekLevelup.currentTime = 0
-    getGameObject.call(this).sounds.snekLevelup.play()
+    // getGameObject.call(this).sounds.snekLevelup.currentTime = 0
+    // getGameObject.call(this).sounds.snekLevelup.play()
     this.level++
-    this.addSegment()
     this.normalizeTurnRate()
   }
 
   gainExp(exp) {
     this.currExp += exp
     this.totalExpGained += exp
-  }
-
-  addSegment(n=1) {
-    for(let i = 0; i < n; i++) {
-      if (!this.downstreamSegment){
-        this.downstreamSegment = new Segment(this.ctx, this)
-        this.downstreamSegment.subSpecies = 'snek'
-      } else {
-        const newSegment = new Segment(this.ctx, this)
-        newSegment.subSpecies = 'snek'
-        const oldSegment = this.downstreamSegment
-        oldSegment.upstreamSegment = newSegment
-        newSegment.downstreamSegment = oldSegment
-        this.downstreamSegment = newSegment
-      }
-      this.segments.push(this.downstreamSegment)
-      // this.currKnownSegmentCount++
-    }
   }
 
   initEventListeners() {
@@ -242,8 +194,8 @@ export default class Snek extends Mob {
   }
 
   harmed() {
-    getGameObject.call(this).sounds.snekPanic.currentTime = 0
-    getGameObject.call(this).sounds.snekPanic.play()
+    // getGameObject.call(this).sounds.snekPanic.currentTime = 0
+    // getGameObject.call(this).sounds.snekPanic.play()
     this.activateEffect({
       name: 'panic',
       offsets: {
@@ -294,31 +246,6 @@ export default class Snek extends Mob {
     }
   }
 
-  get countSegments() {
-    let n = 0
-    let downSeg = this.downstreamSegment
-    while (downSeg) {
-      n++
-      downSeg = downSeg.downstreamSegment
-    }
-    return n
-  }
-
-
-  updatePostDigestionEffects() {
-    // * Activate Post Digestion Effects after content is fully digested
-    // * Expire when effects' time runs out
-    for (let i = 0; i < this.postDigestionEffects.length; ++i) {
-      const pDE = this.postDigestionEffects[i]
-      pDE.timeLeft -= Constants.TICK
-      if (pDE.timeLeft <= 0) {
-        this.postDigestionEffects.splice(i,1)
-        Digestion.cancelPostDigestionEffects.call(this, pDE )
-        --i
-      }
-    }
-  }
-
   render() {
       this.ctx.save()
       this.ctx.translate(this.position.x, this.position.y)
@@ -365,11 +292,5 @@ export default class Snek extends Mob {
       console.log(`Level up!`, )
       this.levelUp()
     }
-    
-    // while(this.currSegExp >= this.segExpForLevel(this.countSegments + 1)
-    //   && this.countSegments < this.maxSegmentCount) {
-    //   console.log(`New seg from seg level up`, )
-    //   this.addSegment()
-    // }
   }
 }

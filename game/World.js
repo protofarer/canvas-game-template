@@ -1,6 +1,7 @@
 import Entity from './ents/Entity'
 import { moveEdgeWrap } from './behaviors/movements'
 import Traits from './ents/Traits'
+import Apple from './ents/immobs/Apple'
 
 /** Runs world events and spawning behaviors
  * @class
@@ -196,7 +197,7 @@ export default class World {
    */
   getEntClass(entWord) {
     switch (entWord) {
-      case 'someString':
+      case 'apple':
         return Apple
       default:
         throw Error(`Invalid class string: ${entWord}`)

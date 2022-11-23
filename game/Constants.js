@@ -6,6 +6,7 @@ export default {
   CANVAS_WIDTH: 400,
   CANVAS_HEIGHT: 600,
   collisionFunction: {
-    BASE: 'base'
+    HIT: 'hit',
+    AFFECT: 'affect'
   }
 }

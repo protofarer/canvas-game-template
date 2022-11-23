@@ -1,7 +1,6 @@
 import Entity from '../ents/Entity'
 import Constants from '../Constants'
 import Collisions from '../behaviors/Collisions'
-import Digestion from '../behaviors/Digestion'
 
 /**
  * Returns the topmost parent object aka game
@@ -61,16 +60,11 @@ export function loadTraits(traitObject) {
 
 export function getTraitFunction(name) {
     if ([
-      Constants.collisionFunction.BASE_CHOMP,
+      Constants.collisionFunction.BASE,
       Constants.collisionFunction.SMALL_CHOMP,
       Constants.collisionFunction.BIG_CHOMP,
     ].includes(name)
     ) return Collisions[name]
-
-    if ([
-      Constants.underDigestionFunction.BASE_ABSORB_EXP
-    ].includes(name)
-    ) return Digestion[name]
 
     throw Error('getTraitFunction called with invalid args')
 }

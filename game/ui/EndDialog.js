@@ -64,7 +64,7 @@ export default class EndDialog {
       this.game.ctx,
       { size: 16, family: 'Arial', weight: 'bold' },
       { x: 15, y: 25 },
-      this.data.isVictory ? 'Sssnek WINSSSS!' : 'Sssnek got sssquished!', 
+      this.data.isVictory ? 'You win!' : 'You lose!', 
     )
   }
 

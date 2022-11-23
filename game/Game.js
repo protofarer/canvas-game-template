@@ -28,7 +28,7 @@ import Audio from './modules/Audio'
  */
 export default class Game {
 
-  constructor (container) {
+  constructor () {
     this.phase = Constants.PHASE_PAUSE
     this.t = -1
 
@@ -37,8 +37,8 @@ export default class Game {
 
     this.stateMachine = new StateMachine({
         start: States.StartState,
-        play: States.Play,
-        playDebug: States.PlayDebug,
+        play: States.PlayState,
+        playDebug: States.PlayDebugState,
         gameOver: States.GameOverState
       }, this)
 
@@ -54,7 +54,7 @@ export default class Game {
   }
 
   load() {
-    new Background(this.container, 'green')
+    new Background(this.container, 'blue')
     this.clock = new Clock(this.ctx, this)
     this.world = new World(this)
     const Sounds = Audio()
@@ -75,6 +75,8 @@ export default class Game {
   setupCanvas() {
     document.title = 'A New Project';
     this.container = document.createElement('div')
+    this.container.id = 'container'
+    document.body.appendChild(this.container)
     this.canvas = document.createElement('canvas')
     this.canvas.id = 'layerGame'
     this.canvas.width = Constants.CANVAS_WIDTH

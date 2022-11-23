@@ -1,6 +1,6 @@
 import BaseState from './BaseState'
 import Snek from '../ents/mobs/Snek'
-import ModalButton from '../../components-canvas/ModalButton'
+import ModalButton from '../ui/ModalButton'
 import { recycle } from '../utils/helpers'
 
 export class StartState extends BaseState {
@@ -10,6 +10,8 @@ export class StartState extends BaseState {
 
   constructor(game) {
     super()
+    console.log(`Entered StartState`, )
+    
     this.game = game
     this.game.panel.panelContainer.style.setProperty('visibility', 'hidden')
 
@@ -47,7 +49,7 @@ export class StartState extends BaseState {
         y: this.game.canvas.height * 0.35, 
       },
       base: { w: 125, },
-      label: 'Normal Mode',
+      label: 'Play!',
     }
     this.normalButt = new ModalButton(
       null,
@@ -92,8 +94,8 @@ export class StartState extends BaseState {
       this.game.canvas.width, this.game.canvas.height
     )
 
-    // this.normalButt.render()
-    this.survivalButt.render()
+    this.normalButt.render()
+    this.otherButt.render()
     this.game.ctx.font = '16px Arial'
     this.game.ctx.fillStyle = 'darkred'
     this.game.ctx.fillText('- portrait orientation only', 55, 100)
@@ -107,11 +109,11 @@ export class StartState extends BaseState {
     document.removeEventListener('keydown', this.handleKeyDown)
 
     // ! TODO removeEventListener in class Button not working as intended
+    this.normalButt.removeClickListener()
     this.otherButt.removeClickListener()
-    this.survivalButt.removeClickListener()
     // ! workaround
     this.otherButt.path = new Path2D()
-    this.survivalButt.path = new Path2D()
+    this.otherButt.path = new Path2D()
     this.game.panel.panelContainer.style.setProperty('visibility', 'visible')
   }
 }

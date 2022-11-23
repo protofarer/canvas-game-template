@@ -6,18 +6,15 @@ import Snek from '../ents/mobs/Snek'
  * 
  * @property {Number} score - number of items snek has swallowed
  */
-export class PlayNormalState extends BaseState {
+export class PlayState extends BaseState {
   level
-  stateName = 'playNormal'
+  stateName = 'play'
 
   constructor(game, params) {
     super()
+    console.log(`Entered PlayNormalState`, )
+    
     this.game = game
-
-    this.snek = params?.snek
-      || new Snek(this.game.ctx, null, this.game)
-
-    this.game.setSnek(this.snek)
 
     this.level = params.level
     this.score = params.score

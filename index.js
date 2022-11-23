@@ -5,7 +5,7 @@ export const ENV = new (function() {
 }) ()
 
 export function newGame() {
-  new Game(container)
+  new Game()
 }
 
 newGame()

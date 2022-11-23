@@ -12,7 +12,7 @@ export default class Collisions {
   }
 
   // Apply an effect to some ent, eg absorb/apply experience
-  static [Constants.collisionFunction.BASE](entAffected) {
+  static [Constants.collisionFunction.AFFECT](entAffected) {
     // do something to entAffected
   }
   
