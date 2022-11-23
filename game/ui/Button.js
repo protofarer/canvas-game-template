@@ -16,38 +16,33 @@ export default class Button {
   //  D. set its own path aka clickArea
   // IV. Possibilities
   //  CSDR addEventListener to something more general than a canvas.context paremeter
-  constructor(ctx, buttonData, offset, handleClick=null, listenerOptions=null) {
+
+  // TODO show shape of data arg
+  constructor(parentOrigin, ctx, data, handleClick=null, listenerOptions=null) {
     if (ctx === null || ctx === undefined || ctx === {}) {
       throw new TypeError('A button\'s context wasn\'t defined')
     }
-    if (!buttonData?.origin?.x || !buttonData?.origin?.y) {
+    if (!data?.origin?.x || !data?.origin?.y) {
       throw new TypeError('A button\'s origin coordinates weren\'t defined')
     }
-    // if (!offset?.x || !offset?.y) {
-    //   throw new TypeError('A button\'s offsets weren\'t defined')
-    // }
-    // if (!handleClick) {
-    //   throw new TypeError('A button\'s handleClick wasn\'t defined')
-    // }
 
-    this.name = buttonData.name || 'unnamed'
-
+    this.name = data.name || 'unnamed'
     this.ctx = ctx
-    this.offset = offset
 
-    this.rect = this.ctx.canvas.getBoundingClientRect() 
+    this.origin = data?.origin ?? { x: 0, y: 0 }
+    // needs parentOrigin for setting click path, not used for rendering
+    this.parentOrigin = parentOrigin || { x: 0, y: 0 }
+    this.label = data.label || 'no-button-label-assigned'
+    this.baseWidth = data?.base?.w || 70
+    this.baseHeight = data?.base?.h || 30
+    this.stretchWidth = data?.stretch?.w || 1
+    this.stretchHeight = data?.stretch?.h || 1
 
-    this.origin = buttonData.origin
-    this.label = buttonData.label || 'no-button-label-assigned'
-    this.baseWidth = buttonData.base?.w || 70
-    this.baseHeight = buttonData.base?.h || 30
-    this.stretchWidth = buttonData.stretch?.w || 1
-    this.stretchHeight = buttonData.stretch?.h || 1
+    this.areaFill = data.areaFill || 'hsl(210,90%,85%)'
+    this.labelColor = data.labelColor || 'hsl(200, 20%, 30%)'
+    this.borderStroke = data.borderStroke || this.areaFill
 
-    this.areaFill = buttonData.areaFill || 'hsl(210,90%,85%)'
-    this.labelColor = buttonData.labelColor || 'hsl(200, 20%, 30%)'
-    this.borderStroke = buttonData.borderStroke || this.areaFill
-
+    // ! offset isnt included?
     this.top = this.origin.y
     this.bottom = this.origin.y + this.baseHeight * this.stretchHeight
     this.left = this.origin.x
@@ -58,8 +53,9 @@ export default class Button {
     }
 
     this.setPath()
+
     function defaultHandleClick() {
-      console.log(`${this.label} button's default handler triggered.`)
+      console.log(`${this.label} button's click handler hasn't been defined.`)
     }
     this.handleClick = handleClick || defaultHandleClick
     this.listenerOptions = listenerOptions || {}
@@ -73,8 +69,8 @@ export default class Button {
   setPath() {
     this.path = new Path2D()
     this.path.rect(
-      this.offset.x + this.origin.x - 2, 
-      this.offset.y + this.origin.y - 2,
+      this.parentOrigin.x + this.origin.x - 2, 
+      this.parentOrigin.y + this.origin.y - 2,
       this.baseWidth * this.stretchWidth + 4,
       this.baseHeight * this.stretchHeight + 4,
     )
@@ -83,13 +79,15 @@ export default class Button {
   addClickListener(newHandleClick, listenerOptions) {
     // Click detection handled handled here instead of outside of it!
     // Assuming handler listening to canvas
-    // Reuses stored handleClick and listenerOpts if arguments null
-    this.handleClick = newHandleClick ? newHandleClick : this.handleClick
-    this.listenerOptions = listenerOptions ? listenerOptions : this.handleClick
+    this.handleClick = newHandleClick || this.handleClick
+    this.listenerOptions = listenerOptions || this.handleClick
 
     this.handleButtonClick = function hBC(e) {
         if (this.ctx.isPointInPath(
-          this.path, e.clientX - this.rect.left, e.clientY - this.rect.top
+          this.path, 
+          // works for display pixels aka CSS scaling
+          (e.clientX - this.ctx.canvas.offsetLeft) * this.ctx.canvas.width / this.ctx.canvas.clientWidth, 
+          (e.clientY - this.ctx.canvas.offsetTop) * this.ctx.canvas.height / this.ctx.canvas.clientHeight
         )) {
           console.log(`${this.label}'s handleButtonClicked`, )
           this.handleClick()
@@ -104,10 +102,12 @@ export default class Button {
   }
 
   removeClickListener() {
+    // ! TODO NOT WORKING
     this.controller.abort()
+    this.ctx.canvas.removeEventListener('click', this.handleButtonClick)
   }
 
-  draw() {
+  render() {
     // Init clickArea path here because Panel draw does offset for its components
     // and I don't want to pass in more constructor arguments to this button
     // Indeed, the button is oblivious to its environment at large
@@ -121,7 +121,8 @@ export default class Button {
     this.ctx.shadowOffsetY = 5
 
     this.ctx.beginPath()
-    this.ctx.fillRect(this.origin.x, 
+    this.ctx.fillRect(
+      this.origin.x, 
       this.origin.y, 
       this.baseWidth * this.stretchWidth, 
       this.baseHeight * this.stretchHeight
@@ -141,7 +142,7 @@ export default class Button {
     // Finagling with centering the text here, making estimates based on
     // 16pt font size equivalent in pixels, see label.length * [numeric literal]
     this.ctx.fillText(`${this.label}`, 
-      (this.origin.x + (this.baseWidth * this.stretchWidth / 2) - (this.label.length*8/2)), this.origin.y + 20
+      (this.origin.x + (0.5 * this.baseWidth * this.stretchWidth) - (this.label.length*8/2)), this.origin.y + 20
     )
   }
 }

@@ -1,7 +1,7 @@
-import ModalButton from '../../components-canvas/ModalButton'
+import ModalButton from './ModalButton'
 import { animatedTextLine } from '../utils/colormorph'
 
-export default class SnekEndDialog {
+export default class EndDialog {
   // Stops and Starts the play loop
   // CSDR removing start stop and letting draw run in background
   // for simplicity sake, after playing with this approach

@@ -1,6 +1,5 @@
 import BaseState from './BaseState'
-import Snek from '../ents/mobs/Snek'
-import SnekEndDialog from '../ui/SnekEndDialog'
+import EndDialog from '../ui/EndDialog'
 
 /**
  * 
@@ -18,7 +17,7 @@ export class GameOverState extends BaseState {
       isVictory: params?.isVictory
     }
 
-    this.endDialog = new SnekEndDialog(this.game, data)
+    this.endDialog = new EndDialog(this.game, data)
     this.endDialog.show()
     this.game.panel.render()
   }
