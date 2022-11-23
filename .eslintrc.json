@@ -15,9 +15,6 @@
             { "allowTemplateLiterals": true }
         ],
         "no-console": "off",
-        "semi": [
-            "warn",
-            "never"
-        ]
+        "semi": [ "always" ]
     }
 }
